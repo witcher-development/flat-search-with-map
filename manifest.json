@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Hello Extensions",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "css": ["leaflet.css", "styles.css"],
+      "js": ["leaflet.js", "main.js"]
+    }
+  ]
+}

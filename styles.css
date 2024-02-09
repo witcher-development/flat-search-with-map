@@ -1,0 +1,26 @@
+.flatSearch_openMapButton {
+	position: fixed;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%)
+}
+
+.flatSearch_bodyOffset {
+	padding-right: 600px;
+}
+
+#flatSearch_mapElement {
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 600px;
+	height: 100%;
+
+	overflow: hidden;
+}
+
+.flatSearch_hideMapButton {
+	position: fixed;
+	right: 10px;
+	top: 10px;
+}
