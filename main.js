@@ -69,19 +69,45 @@ const showButton = () => {
 
 const config = [
 	{
-		host: "www.nehnutelnosti.sk"
+		host: "www.nehnutelnosti.sk",
+		listingPage: () => {
+			const items = document.querySelectorAll('.advertisement-item')
+			return items.length > 0
+		},
+		getMarkersData: async () => {
+			const items = [...document.querySelectorAll('.advertisement-item')]
+			const locations = []
+
+			items.forEach(async (item) => {
+				const link = item.querySelector('.advertisement-item--content__title')
+				console.log(link.href)
+				const response = await fetch(link.href)
+				const responseText = await response.text()
+				const parser = new DOMParser()
+				const page = parser.parseFromString(responseText, "text/html")
+
+				const script = page.querySelector("#__NEXT_DATA__")
+				const data = JSON.parse(script.innerHTML)
+
+				const location = data.props.pageProps.advertisement.location.point
+				locations.push({ lat: location.latitude, long: location.longitude })
+			})
+		}
 	}
 ]
 
-const supportedSite = () => {
-	return config.some(({ host }) => location.host === host)	
+const getConfig = () => {
+	return config.find((config) => location.host === config.host && config.listingPage())	
 }
 
 
 const main = () => {
-	if (!supportedSite()) return
+	const config = getConfig()
+	if (!config) return
 
 	showButton()
+
+	config.getMarkersData()
 }
 
 
