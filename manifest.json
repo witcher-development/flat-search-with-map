@@ -9,5 +9,9 @@
       "css": ["leaflet.css", "styles.css"],
       "js": ["leaflet.js", "main.js"]
     }
-  ]
+  ],
+  "web_accessible_resources": [{
+    "resources": ["images/*.png"],
+    "matches": ["<all_urls>"]
+  }]
 }
