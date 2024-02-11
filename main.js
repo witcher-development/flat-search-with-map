@@ -109,18 +109,25 @@ const config = [
 			const items = [...document.querySelectorAll('.advertisement-item')]
 			const locations$ = items.map(async (item) => {
 				const link = item.querySelector('.advertisement-item--content__title')
-				console.log(link.innerHTML, link.href)
 				const response = await fetch(link.href).catch(e => console.log('failed to fetch', e))
 				const responseText = await response.text()
 				const parser = new DOMParser()
 				const page = parser.parseFromString(responseText, "text/html")
 
 				const script = page.querySelector("#__NEXT_DATA__")
-				const data = JSON.parse(script.innerHTML)
+				if (script) {
+					const data = JSON.parse(script.innerHTML)
 
-				const location = data.props.pageProps.advertisement.location.point
-				console.log({ lat: location.latitude, lng: location.longitude, link: link.href, text: link.innerHTML })
-				return { lat: location.latitude, lng: location.longitude, link: link.href, text: link.innerHTML }
+					const location = data.props.pageProps.advertisement.location.point
+					return { lat: location.latitude, lng: location.longitude, link: link.href, text: link.innerHTML }	
+				}
+
+				console.log('legacy')
+				const oldMap = page.querySelector('[data-gps-marker]')
+				console.log(oldMap)
+				const data = JSON.parse(oldMap.getAttribute('data-gps-marker'))
+				console.log({ lat: data.gpsLatitude, lng: data.gpsLongitude, link: link.href, text: link.innerHTML })
+				return { lat: data.gpsLatitude, lng: data.gpsLongitude, link: link.href, text: link.innerHTML }	
 			})
 
 			return (await Promise.allSettled(locations$)).map(({ value }) => value)
