@@ -24,3 +24,53 @@
 	right: 10px;
 	top: 10px;
 }
+
+.flatSearch_loading {
+	position: fixed;
+	right: 12.5%;
+	top: 14px;
+	transform: translateX(50%);
+
+	position: fixed;
+	width: 10%;
+	height: 9px;
+	border: 2px solid #fff; 
+	border-radius:10px;
+	padding:1px;
+}
+
+.flatSearch_loading-bar {
+	position:absolute;
+	border-radius:10px;
+	top:0;
+	right:100%;
+	bottom:0;
+	left:0;
+	background:#fff; 
+	width:0;
+	height: 5px;
+	animation:borealisBar 2s linear infinite;
+}
+
+@keyframes borealisBar {
+  0% {
+    left:0%;
+    right:100%;
+    width:0%;
+  }
+  10% {
+    left:0%;
+    right:75%;
+    width:25%;
+  }
+  90% {
+    right:0%;
+    left:75%;
+    width:25%;
+  }
+  100% {
+    left:100%;
+    right:0%;
+    width:0%;
+  }
+}

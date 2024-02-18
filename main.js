@@ -27,6 +27,19 @@ const hideMap = () => {
 	document.body.classList.remove("flatSearch_bodyOffset")
 }
 
+const loadingClass = 'flatSearch_loading'
+const loadingTemplate = `
+	<div class="${loadingClass}">
+		<div class="flatSearch_loading-bar">
+	</div>
+`
+const showLoading = () => {
+	document.body.insertAdjacentHTML('beforeend', loadingTemplate)
+}
+const hideLoading = () => {
+	document.querySelector(`.${loadingClass}`).remove()	
+}
+
 const icon = L.icon({
 	iconUrl: chrome.runtime.getURL("images/marker-icon.png")
 })
@@ -46,8 +59,9 @@ const genMarker = (lat, lng, link, text) => {
 const drawMarkers = async () => {
 	const config = getConfig()
 
+	showLoading()
 	const data = await config.getMarkersData()
-	console.log(data)
+	hideLoading()
 
 	data.forEach(({ lat, lng, link, text }) => genMarker(lat, lng, link, text).addTo(map))
 }
@@ -130,11 +144,8 @@ const config = [
 					return { lat: location.latitude, lng: location.longitude, link: link.href, text: link.innerHTML }	
 				}
 
-				console.log('legacy')
 				const oldMap = page.querySelector('[data-gps-marker]')
-				console.log(oldMap)
 				const data = JSON.parse(oldMap.getAttribute('data-gps-marker'))
-				console.log({ lat: data.gpsLatitude, lng: data.gpsLongitude, link: link.href, text: link.innerHTML })
 				return { lat: data.gpsLatitude, lng: data.gpsLongitude, link: link.href, text: link.innerHTML }	
 			})
 
@@ -150,8 +161,6 @@ const getConfig = () => {
 const main = async () => {
 	const config = getConfig()
 	if (!config) return
-
-	console.log(localStorage)
 
 	if (showAutoOpenMap()) {
 		createMap()
