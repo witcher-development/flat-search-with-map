@@ -1,3 +1,8 @@
+const SHOW_MAP_LOCAL_STORE = "flatSearch_show-map"
+
+const showAutoOpenMap = () => localStorage.getItem(SHOW_MAP_LOCAL_STORE) === "true"
+const setMapAutoShow = (value) => localStorage.setItem(SHOW_MAP_LOCAL_STORE, value) 
+
 let map = null
 
 const createMap = () => {
@@ -62,6 +67,7 @@ const hideButtonHandler = () => {
 
 	showButton()
 
+	setMapAutoShow(false)
 }
 
 const hideButton = () => {
@@ -88,6 +94,8 @@ const showButtonHandler = () => {
 	button.removeEventListener('click', showButtonHandler)
 	button.remove()
 	hideButton()
+
+	setMapAutoShow(true)
 }
 
 const showButton = () => {
@@ -139,12 +147,19 @@ const getConfig = () => {
 	return config.find((config) => location.host === config.host && config.listingPage())	
 }
 
-
 const main = async () => {
 	const config = getConfig()
 	if (!config) return
 
-	showButton()
+	console.log(localStorage)
+
+	if (showAutoOpenMap()) {
+		createMap()
+		drawMarkers()
+		hideButton()
+	} else {
+		showButton()
+	}
 }
 
 
