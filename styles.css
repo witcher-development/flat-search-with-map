@@ -6,14 +6,14 @@
 }
 
 .flatSearch_bodyOffset {
-	padding-right: 600px;
+	padding-right: 25%;
 }
 
 #flatSearch_mapElement {
 	position: fixed;
 	right: 0;
 	top: 0;
-	width: 600px;
+	width: 25%;
 	height: 100%;
 
 	overflow: hidden;
