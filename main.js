@@ -96,14 +96,6 @@ const icon = (link, price) => L.divIcon({
 
 const genMarker = (lat, lng, link, price) => {
   return L.marker([lat, lng], { icon: icon(link, price) })
-    // .bindPopup(
-    //   `<a 
-    //         href="${encodeURI(link)}" 
-    //         target="_blank"
-    //      >
-    //         ${text}
-    //     </a>`
-    // );
 }
 
 const drawMarkers = async () => {
@@ -129,6 +121,7 @@ const hideButtonHandler = () => {
 	button.removeEventListener('click', hideButtonHandler)
 	button.remove()
 
+	hideSupportBanner()
 	showButton()
 
 	setMapAutoShow(false)
@@ -138,7 +131,6 @@ const hideButton = () => {
 	document.body.insertAdjacentHTML('beforeend', hideButtonTemplate)
 	const button = document.querySelector(`.${hideButtonClass}`)
 	button.addEventListener('click', hideButtonHandler)
-	
 }
 
 
@@ -158,6 +150,7 @@ const showButtonHandler = () => {
 	button.removeEventListener('click', showButtonHandler)
 	button.remove()
 	hideButton()
+	showSupportBanner()
 
 	setMapAutoShow(true)
 }
@@ -169,6 +162,17 @@ const showButton = () => {
 }
 
 
+const supportTemplate = `
+	<a class="flatSearch_support" href="https://www.buymeacoffee.com/witcherDev" target="_blank">
+		<img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="135">
+	</a>
+`
+const showSupportBanner = () => {
+	document.body.insertAdjacentHTML('beforeend', supportTemplate)
+}
+const hideSupportBanner = () => {
+	document.querySelector('.flatSearch_support')?.remove()
+}
 
 const config = [
 	{
@@ -224,6 +228,7 @@ const main = async () => {
 		createMap()
 		drawMarkers()
 		hideButton()
+		showSupportBanner()
 	} else {
 		showButton()
 	}

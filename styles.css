@@ -13,10 +13,18 @@
 	position: fixed;
 	right: 0;
 	top: 0;
-	width: 25%;
+	z-index: 1000;
+	width: 29%;
 	height: 100%;
 
 	overflow: hidden;
+}
+
+.flatSearch_support {
+	position: fixed;
+	left: 71%;
+	bottom: 0;
+	color: #fff;
 }
 
 .flatSearch_hideMapButton {
