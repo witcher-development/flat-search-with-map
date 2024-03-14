@@ -82,12 +82,16 @@ const hideLoading = () => {
 // })
 const icon = (link, price) => L.divIcon({
 	className: "flatSearch_marker",
-	html: `<a 
-            href="${encodeURI(link)}" 
-            target="_blank"
-         >
-            ${price}
-        </a>`
+	html: `
+		<div class="flatSearch_marker-inner">
+			<a 
+				href="${encodeURI(link)}" 
+				target="_blank"
+			>
+				${price}
+			</a>
+		</div>
+	`
 })
 
 const genMarker = (lat, lng, link, price) => {
@@ -109,7 +113,7 @@ const drawMarkers = async () => {
 	const data = await config.getMarkersData()
 	hideLoading()
 
-	data.forEach(({ lat, lng, link, price }) => genMarker(lat, lng, link, price).addTo(map))
+	data.filter(item => !!item).forEach(({ lat, lng, link, price }) => genMarker(lat, lng, link, price).addTo(map))
 }
 
 
@@ -177,8 +181,12 @@ const config = [
 			const items = [...document.querySelectorAll('.advertisement-item')]
 			const locations$ = items.map(async (item) => {
 				const link = item.querySelector('.advertisement-item--content__title')
+				if (!link) return null
+
 				const _price = item.querySelector('.advertisement-item--content__price').childNodes[0].textContent
 				const price = parseInt(_price)
+				if (!price) return null
+
 				const response = await fetch(link.href).catch(e => console.log('failed to fetch', e))
 				const responseText = await response.text()
 				const parser = new DOMParser()
@@ -193,6 +201,8 @@ const config = [
 				}
 
 				const oldMap = page.querySelector('[data-gps-marker]')
+				if (!oldMap) return null
+
 				const data = JSON.parse(oldMap.getAttribute('data-gps-marker'))
 				return { lat: data.gpsLatitude, lng: data.gpsLongitude, link: link.href, price }	
 			})
