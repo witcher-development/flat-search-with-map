@@ -1,7 +1,35 @@
 const SHOW_MAP_LOCAL_STORE = "flatSearch_show-map"
+const MAP_POSITION_LOCAL_STORE = "flatSearch_map-center"
 
 const showAutoOpenMap = () => localStorage.getItem(SHOW_MAP_LOCAL_STORE) === "true"
 const setMapAutoShow = (value) => localStorage.setItem(SHOW_MAP_LOCAL_STORE, value) 
+
+
+
+
+function debounce(func, delay) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
+const mapPosition = () => {
+	const store = localStorage.getItem(MAP_POSITION_LOCAL_STORE)
+	if (store !== null) return JSON.parse(store)
+	return { center: [48.144, 17.113], zoom: 15 }
+}
+const setMapPosition = (center, zoom) => {
+	const position = { center: [center.lat, center.lng], zoom }
+	localStorage.setItem(MAP_POSITION_LOCAL_STORE, JSON.stringify(position))  
+}
+const debouncedSetMapPosition = debounce((center, zoom) => {
+    setMapPosition(center, zoom);
+}, 300); 
+
 
 let map = null
 
@@ -12,12 +40,21 @@ const createMap = () => {
 
 	document.body.classList.add("flatSearch_bodyOffset")
 	document.body.insertAdjacentHTML('beforeend', '<div id="flatSearch_mapElement"></div>')
-	map = L.map('flatSearch_mapElement').setView([48.144, 17.113], 15);
+
+	const { center, zoom } = mapPosition()
+	map = L.map('flatSearch_mapElement').setView(center, zoom);
 
 	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 	}).addTo(map);
+
+	map.on('move', () => {
+		debouncedSetMapPosition(map.getCenter(), map.getZoom())
+	})
+	map.on('zoom', () => {
+		debouncedSetMapPosition(map.getCenter(), map.getZoom())
+	})
 }
 const hideMap = () => {
 	map.off()

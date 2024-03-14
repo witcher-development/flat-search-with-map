@@ -1,17 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Flat Search Helper",
-  "description": "Adds map to real estate classifieds",
+  "name": "Map for real estate listing websites",
+  "description": "Adds map to real estate listing website for easier navigation in offers",
   "version": "1.0",
   "content_scripts": [
     {
-      "matches": ["https://*/*"],
+      "matches": ["https://www.nehnutelnosti.sk/*"],
       "css": ["leaflet.css", "styles.css"],
       "js": ["leaflet.js", "main.js"]
     }
   ],
   "web_accessible_resources": [{
     "resources": ["images/*.png"],
-    "matches": ["<all_urls>"]
+    "matches": ["https://www.nehnutelnosti.sk/*"]
   }]
 }
