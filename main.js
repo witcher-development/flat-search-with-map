@@ -77,20 +77,29 @@ const hideLoading = () => {
 	document.querySelector(`.${loadingClass}`).remove()	
 }
 
-const icon = L.icon({
-	iconUrl: chrome.runtime.getURL("images/marker-icon.png")
-})
-
-const genMarker = (lat, lng, link, text) => {
-  return L.marker([lat, lng], { icon })
-    .bindPopup(
-      `<a 
+// const icon = L.icon({
+// 	iconUrl: chrome.runtime.getURL("images/marker-icon.png")
+// })
+const icon = (link, price) => L.divIcon({
+	className: "flatSearch_marker",
+	html: `<a 
             href="${encodeURI(link)}" 
             target="_blank"
          >
-            ${text}
+            ${price}
         </a>`
-    );
+})
+
+const genMarker = (lat, lng, link, price) => {
+  return L.marker([lat, lng], { icon: icon(link, price) })
+    // .bindPopup(
+    //   `<a 
+    //         href="${encodeURI(link)}" 
+    //         target="_blank"
+    //      >
+    //         ${text}
+    //     </a>`
+    // );
 }
 
 const drawMarkers = async () => {
@@ -100,7 +109,7 @@ const drawMarkers = async () => {
 	const data = await config.getMarkersData()
 	hideLoading()
 
-	data.forEach(({ lat, lng, link, text }) => genMarker(lat, lng, link, text).addTo(map))
+	data.forEach(({ lat, lng, link, price }) => genMarker(lat, lng, link, price).addTo(map))
 }
 
 
@@ -168,6 +177,8 @@ const config = [
 			const items = [...document.querySelectorAll('.advertisement-item')]
 			const locations$ = items.map(async (item) => {
 				const link = item.querySelector('.advertisement-item--content__title')
+				const _price = item.querySelector('.advertisement-item--content__price').childNodes[0].textContent
+				const price = parseInt(_price)
 				const response = await fetch(link.href).catch(e => console.log('failed to fetch', e))
 				const responseText = await response.text()
 				const parser = new DOMParser()
@@ -178,12 +189,12 @@ const config = [
 					const data = JSON.parse(script.innerHTML)
 
 					const location = data.props.pageProps.advertisement.location.point
-					return { lat: location.latitude, lng: location.longitude, link: link.href, text: link.innerHTML }	
+					return { lat: location.latitude, lng: location.longitude, link: link.href, price }	
 				}
 
 				const oldMap = page.querySelector('[data-gps-marker]')
 				const data = JSON.parse(oldMap.getAttribute('data-gps-marker'))
-				return { lat: data.gpsLatitude, lng: data.gpsLongitude, link: link.href, text: link.innerHTML }	
+				return { lat: data.gpsLatitude, lng: data.gpsLongitude, link: link.href, price }	
 			})
 
 			return (await Promise.allSettled(locations$)).map(({ value }) => value)
