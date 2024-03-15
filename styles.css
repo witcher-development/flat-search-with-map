@@ -24,6 +24,7 @@
 	position: fixed;
 	left: 71%;
 	bottom: 0;
+	z-index: 1001;
 	color: #fff;
 }
 
@@ -31,6 +32,7 @@
 	position: fixed;
 	right: 10px;
 	top: 10px;
+	z-index: 1001;
 }
 
 .flatSearch_marker-inner {
@@ -66,6 +68,7 @@
 	position: fixed;
 	right: 12.5%;
 	top: 14px;
+	z-index: 1001;
 	transform: translateX(50%);
 
 	position: fixed;
