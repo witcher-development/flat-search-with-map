@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Map for real estate listing websites",
   "description": "Adds map to real estate listing website for easier navigation in offers",
-  "version": "1.0",
+  "version": "1.1",
   "content_scripts": [
     {
       "matches": ["https://www.nehnutelnosti.sk/*"],

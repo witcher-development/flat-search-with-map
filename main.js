@@ -188,8 +188,7 @@ const config = [
 				if (!link) return null
 
 				const _price = item.querySelector('.advertisement-item--content__price').childNodes[0].textContent
-				const price = parseInt(_price)
-				if (!price) return null
+				const price = parseInt(_price) || 0
 
 				const response = await fetch(link.href).catch(e => console.log('failed to fetch', e))
 				const responseText = await response.text()
@@ -202,6 +201,14 @@ const config = [
 
 					const location = data.props.pageProps.advertisement.location.point
 					return { lat: location.latitude, lng: location.longitude, link: link.href, price }	
+				}
+
+				const nextFOption = [...page.querySelectorAll("script")].find(el => el.innerText.startsWith('self.__next_f.push([1,"7:'))
+				if (nextFOption) {
+					const content = nextFOption.innerText
+					const parsed = JSON.parse(content.substring(25, content.length - 5).replace(/\\/g,""))
+					const point = parsed[3][3].advertisement.location.point
+					return { lat: point.latitude, lng: point.longitude, link: link.href, price }
 				}
 
 				const oldMap = page.querySelector('[data-gps-marker]')
@@ -238,6 +245,5 @@ const main = async () => {
 
 window.onload = function () {
 	main()
-	console.log(L)
 }
 
